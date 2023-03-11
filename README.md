@@ -11,15 +11,8 @@
 
 ## コンパイル方法
 
-nask.exeを常に管理者権限で動作するように設定した上で、コマンドプロンプトでファイルのあるディレクトリに移動して以下を実行してください。
-
-```
-del APCOS.sys
-del APCOS.TFD
-nask.exe APCOS.nas APCOS.sys
-copy /B APCOS.sys + hood APCOS.TFD
-```
+nasmをインストールしてPATHを通した状態でmake.batを実行してください
 
 ## ライセンス
 
-LICENSEファイルにライセンスが記述されています。また、ソースコードは[こちら](https://github.com/TakedaHiromasa/HelloWorld-PC98)を改造して作らせていただきました(こちらのライセンス表記もLICENSEに含まれております)。コンパイラは「30日でできる！ OS自作入門」の著者である川合秀実氏が公開しているものを利用しています。改変・再配布自由とのことで、リポジトリに含ませていただいております。本当はnasmで動くようにしたかったのですが上手く行きませんでした。うまくいかなかったコードがAPCOS.asmです。
+LICENSEファイルにライセンスが記述されています。また、ソースコードは[こちら](https://github.com/TakedaHiromasa/HelloWorld-PC98)を改造して作らせていただきました(こちらのライセンス表記もLICENSEに含まれております)。

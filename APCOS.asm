@@ -1,5 +1,3 @@
-; nasmでコンパイルして動くようにしたかったのですが、上手く行きませんでした
-; そのため、このコードは正常に動作しません
 [BITS 16]
 [CPU 286]
 	
@@ -30,6 +28,28 @@
 ; プログラム本体
 ;/////////////////////////////
 section .text
+		
+print:
+		PUSH 	BP
+		MOV 	BP,SP
+		MOV		AX,[BP+4]
+		MOV		ES,AX
+		MOV		SI,[BP+6]
+		MOV		BX,0
+;文字列を1文字ずつテキストVRAMにセットするループ
+putloop:
+		MOV		AL,[CS:SI]	
+		CMP		AL,0
+		JE		end
+		MOV		[ES:BX],AL	
+		INC		SI			
+		ADD		BX,2		
+		JMP		putloop
+end:
+		MOV		SP,BP
+		POP		BP
+		ret
+
 entry:
 		MOV		AX,0		
 		MOV		DS,AX
@@ -38,21 +58,18 @@ entry:
 		
 ;-------------------------------------------------
 ;文字列表示
-print:
-		MOV		SI,msg		
-		MOV		AX,0xa000
-		MOV		ES,AX
-		MOV		BX,0x0000
-		
-;文字列を1文字ずつテキストVRAMにセットするループ
-putloop:
-		MOV		AL,[CS:SI]	
-		CMP		AL,0
-		JE		fin
-		MOV		[ES:BX],AL	
-		INC		SI			
-		ADD		BX,2		
-		JMP		putloop
+line1:
+		PUSH	msg
+		PUSH	0xa000
+		call	print
+		ADD		SP,8
+
+line2:
+		PUSH	msg2
+		PUSH	0xa00a
+		call 	print
+		ADD		SP,8
+
 		
 ;-------------------------------------------------	
 ;-------------------------------------------------
@@ -60,13 +77,15 @@ putloop:
 fin:
 		HLT				
 		JMP		fin		
-
+TIMES 0xF0-$+$$ DB 0	
 ;-------------------------------------------------
 ;データセクション
 section .data
 msg:
 		DB "THANK YOU FOR COMING TO APC"
-		DB "  -Asano Physics Club 2022-"
+		DB 0x0
+msg2:
+		DB "-Asano Physics Club 2022-"
 		DB 0x0
 ;-------------------------------------------------
-		TIMES   0x400-($-$$) DB 0		
+TIMES 0x310-$+$$ DB 0

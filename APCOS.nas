@@ -28,6 +28,19 @@
 ; プログラム本体
 ;/////////////////////////////
 section .text
+		
+;文字列を1文字ずつテキストVRAMにセットするループ
+putloop:
+		MOV		AL,[CS:SI]	
+		CMP		AL,0
+		JE		end
+		MOV		[ES:BX],AL	
+		INC		SI			
+		ADD		BX,2		
+		JMP		putloop
+end:
+		ret
+
 entry:
 		MOV		AX,0		
 		MOV		DS,AX
@@ -41,16 +54,15 @@ print:
 		MOV		AX,0xa000
 		MOV		ES,AX
 		MOV		BX,0x0000
-		
-;文字列を1文字ずつテキストVRAMにセットするループ
-putloop:
-		MOV		AL,[CS:SI]	
-		CMP		AL,0
-		JE		fin
-		MOV		[ES:BX],AL	
-		INC		SI			
-		ADD		BX,2		
-		JMP		putloop
+		call	putloop
+
+init:
+		MOV		SI,msg2
+		MOV		AX,0xa00a
+		MOV 	ES,AX
+		MOV		BX,0x0
+		call 	putloop
+
 		
 ;-------------------------------------------------	
 ;-------------------------------------------------
@@ -64,7 +76,9 @@ fin:
 section .data
 msg:
 		DB "THANK YOU FOR COMING TO APC"
-		DB "  -Asano Physics Club 2022-"
+		DB 0x0
+msg2:
+		DB "-Asano Physics Club 2022-"
 		DB 0x0
 ;-------------------------------------------------
 		RESB	0x400-$		
